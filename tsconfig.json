@@ -28,6 +28,8 @@
 			"components/*": ["./src/components/*"]
 		}
 	},
+
+  
 	"outDir": "./dist/",
 	"include": ["src/**/*"]
 }
