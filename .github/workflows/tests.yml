@@ -27,3 +27,5 @@ jobs:
         name: report
         path: /tmp/tests-blog-customizer/tmp/artifacts
         retention-days: 30
+
+        
