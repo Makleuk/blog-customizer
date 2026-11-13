@@ -19,7 +19,7 @@ import styles from './ArticleParamsForm.module.scss';
 import clsx from 'clsx';
 
 type ArticleParamsFormProps = {
-	onApply: (settings: ArticleStateType) => void; // Убрали опциональность
+	onApply: (settings: ArticleStateType) => void;
 };
 
 export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
@@ -28,7 +28,6 @@ export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
 		useState<ArticleStateType>(defaultArticleState);
 	const sidebarRef = useRef<HTMLDivElement>(null);
 
-	// Универсальный обработчик для всех полей
 	const handleFieldChange =
 		(field: keyof ArticleStateType) => (option: OptionType) => {
 			setFormSettings((prev) => ({ ...prev, [field]: option }));
@@ -69,23 +68,6 @@ export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
 		setIsSidebarOpen(!isSidebarOpen);
 	};
 
-<<<<<<< HEAD
-export const ArticleParamsForm = (): React.JSX.Element => {
-  return (
-    <>
-      <ArrowButton isOpen={false} onClick={() => undefined} />
-      <aside className={styles.container}>
-        <form className={styles.form}>
-          <div className={styles.bottomContainer}>
-            <Button title="Сбросить" htmlType="reset" type="clear" />
-            <Button title="Применить" htmlType="submit" type="apply" />
-          </div>
-        </form>
-      </aside>
-    </>
-  );
-};
-=======
 	return (
 		<>
 			<ArrowButton isOpen={isSidebarOpen} onClick={toggleSidebar} />
@@ -151,4 +133,3 @@ export const ArticleParamsForm = (): React.JSX.Element => {
 		</>
 	);
 };
->>>>>>> 02adcc2b586a91a623d67c76f13827f67905352e
