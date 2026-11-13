@@ -1,135 +1,140 @@
-import { useState, useRef, useEffect, FormEvent } from 'react';
+import { clsx } from 'clsx';
+import { useEffect, useRef, useState } from 'react';
+import {
+  backgroundColors,
+  contentWidthArr,
+  defaultArticleState,
+  fontColors,
+  fontFamilyOptions,
+  fontSizeOptions,
+} from 'src/constants/articleProps';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
+import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
 import { Text } from 'src/ui/text';
-import {
-	fontFamilyOptions,
-	fontColors,
-	backgroundColors,
-	contentWidthArr,
-	fontSizeOptions,
-	defaultArticleState,
-	ArticleStateType,
-	OptionType,
-} from 'src/constants/articleProps';
+
+import type { FormEvent } from 'react';
+import type { ArticleStateType, OptionType } from 'src/constants/articleProps';
+
 import styles from './ArticleParamsForm.module.scss';
-import clsx from 'clsx';
 
 type ArticleParamsFormProps = {
-	onApply: (settings: ArticleStateType) => void;
+  onApply: (settings: ArticleStateType) => void;
 };
 
-export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
-	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-	const [formSettings, setFormSettings] =
-		useState<ArticleStateType>(defaultArticleState);
-	const sidebarRef = useRef<HTMLDivElement>(null);
+export const ArticleParamsForm = ({
+  onApply,
+}: ArticleParamsFormProps): React.JSX.Element => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [formSettings, setFormSettings] =
+    useState<ArticleStateType>(defaultArticleState);
 
-	const handleFieldChange =
-		(field: keyof ArticleStateType) => (option: OptionType) => {
-			setFormSettings((prev) => ({ ...prev, [field]: option }));
-		};
+  const sidebarRef = useRef<HTMLElement>(null);
 
-	useEffect(() => {
-		if (!isSidebarOpen) {
-			return;
-		}
+  const handleFieldChange =
+    (field: keyof ArticleStateType): ((option: OptionType) => void) =>
+    (option: OptionType): void => {
+      setFormSettings((prev) => ({ ...prev, [field]: option }));
+    };
 
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				sidebarRef.current &&
-				!sidebarRef.current.contains(event.target as Node)
-			) {
-				setIsSidebarOpen(false);
-			}
-		};
+  useEffect(() => {
+    if (!isSidebarOpen) {
+      return;
+    }
 
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, [isSidebarOpen]);
+    const handleClickOutside = (event: MouseEvent): void => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        setIsSidebarOpen(false);
+      }
+    };
 
-	const handleSubmit = (event: FormEvent) => {
-		event.preventDefault();
-		onApply(formSettings);
-		setIsSidebarOpen(false);
-	};
+    document.addEventListener('mousedown', handleClickOutside);
 
-	const handleReset = () => {
-		setFormSettings(defaultArticleState);
-		onApply(defaultArticleState);
-	};
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSidebarOpen]);
 
-	const toggleSidebar = () => {
-		setIsSidebarOpen(!isSidebarOpen);
-	};
+  const handleSubmit = (event: FormEvent): void => {
+    event.preventDefault();
+    onApply(formSettings);
+    setIsSidebarOpen(false);
+  };
 
-	return (
-		<>
-			<ArrowButton isOpen={isSidebarOpen} onClick={toggleSidebar} />
-			<aside
-				className={clsx(styles.container, {
-					[styles.container_open]: isSidebarOpen,
-				})}
-				ref={sidebarRef}>
-				<form className={styles.form} onSubmit={handleSubmit}>
-					<Text as='h2' size={31} weight={800} uppercase>
-						ЗАДАЙТЕ ПАРАМЕТРЫ
-					</Text>
+  const handleReset = (): void => {
+    setFormSettings(defaultArticleState);
+    onApply(defaultArticleState);
+  };
 
-					<Select
-						title='ШРИФТ'
-						options={fontFamilyOptions}
-						selected={formSettings.fontFamilyOption}
-						onChange={handleFieldChange('fontFamilyOption')}
-					/>
+  const toggleSidebar = (): void => {
+    setIsSidebarOpen((isOpen) => !isOpen);
+  };
 
-					<RadioGroup
-						title='РАЗМЕР ШРИФТА'
-						name='fontSize'
-						options={fontSizeOptions}
-						selected={formSettings.fontSizeOption}
-						onChange={handleFieldChange('fontSizeOption')}
-					/>
+  return (
+    <>
+      <ArrowButton isOpen={isSidebarOpen} onClick={toggleSidebar} />
+      <aside
+        className={clsx(styles.container, {
+          [styles.container_open]: isSidebarOpen,
+        })}
+        ref={sidebarRef}
+      >
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <Text as="h2" size={31} weight={800} uppercase>
+            ЗАДАЙТЕ ПАРАМЕТРЫ
+          </Text>
 
-					<Select
-						title='ЦВЕТ ШРИФТА'
-						options={fontColors}
-						selected={formSettings.fontColor}
-						onChange={handleFieldChange('fontColor')}
-					/>
+          <Select
+            title="ШРИФТ"
+            options={fontFamilyOptions}
+            selected={formSettings.fontFamilyOption}
+            onChange={handleFieldChange('fontFamilyOption')}
+          />
 
-					<Separator />
+          <RadioGroup
+            title="РАЗМЕР ШРИФТА"
+            name="fontSize"
+            options={fontSizeOptions}
+            selected={formSettings.fontSizeOption}
+            onChange={handleFieldChange('fontSizeOption')}
+          />
 
-					<Select
-						title='ЦВЕТ ФОНА'
-						options={backgroundColors}
-						selected={formSettings.backgroundColor}
-						onChange={handleFieldChange('backgroundColor')}
-					/>
+          <Select
+            title="ЦВЕТ ШРИФТА"
+            options={fontColors}
+            selected={formSettings.fontColor}
+            onChange={handleFieldChange('fontColor')}
+          />
 
-					<Select
-						title='ШИРИНА КОНТЕНТА'
-						options={contentWidthArr}
-						selected={formSettings.contentWidth}
-						onChange={handleFieldChange('contentWidth')}
-					/>
+          <Separator />
 
-					<div className={styles.bottomContainer}>
-						<Button
-							title='СБРОСИТЬ'
-							htmlType='reset'
-							type='clear'
-							onClick={handleReset}
-						/>
-						<Button title='ПРИМЕНИТЬ' htmlType='submit' type='apply' />
-					</div>
-				</form>
-			</aside>
-		</>
-	);
+          <Select
+            title="ЦВЕТ ФОНА"
+            options={backgroundColors}
+            selected={formSettings.backgroundColor}
+            onChange={handleFieldChange('backgroundColor')}
+          />
+
+          <Select
+            title="ШИРИНА КОНТЕНТА"
+            options={contentWidthArr}
+            selected={formSettings.contentWidth}
+            onChange={handleFieldChange('contentWidth')}
+          />
+
+          <div className={styles.bottomContainer}>
+            <Button
+              title="СБРОСИТЬ"
+              htmlType="reset"
+              type="clear"
+              onClick={handleReset}
+            />
+            <Button title="ПРИМЕНИТЬ" htmlType="submit" type="apply" />
+          </div>
+        </form>
+      </aside>
+    </>
+  );
 };
