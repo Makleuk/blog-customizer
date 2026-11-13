@@ -10,7 +10,7 @@ type UseEnterSubmit = {
 export const useEnterSubmit = ({ onChange, option }: UseEnterSubmit): void => {
   const optionRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useEffect((): (() => void) | undefined => {
     const optionHtml = optionRef.current;
 
     if (!optionHtml) return;
@@ -23,9 +23,7 @@ export const useEnterSubmit = ({ onChange, option }: UseEnterSubmit): void => {
 
     optionHtml.addEventListener('keydown', handleEnterKeyDown);
 
-    // не забываем удалять листенеры, при размонтировании компонента
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    return () => {
+    return (): void => {
       optionHtml.removeEventListener('keydown', handleEnterKeyDown);
     };
   }, [onChange, option]);
