@@ -21,17 +21,22 @@ export const Option = (props: OptionProps): React.JSX.Element => {
 
   const optionRef = useRef<HTMLDivElement>(null);
 
-  const handleChange = (): void => onChange?.(option);
+  const handleChange = (): void => {
+    onChange?.(option);
+  };
 
-  useEnterSubmit({ onChange, option });
+  useEnterSubmit({
+    onChange,
+    option,
+    optionRef,
+  });
 
   const inputId = `${groupName}_radio_item_with_value__${value}`;
-  const isChecked = value === selected.title;
+  const isChecked = value === selected.value;
 
   return (
     <div
       className={styles.item}
-      key={value}
       data-checked={isChecked}
       data-testid={inputId}
       tabIndex={0}
@@ -43,6 +48,7 @@ export const Option = (props: OptionProps): React.JSX.Element => {
         name={groupName}
         id={inputId}
         value={value}
+        checked={isChecked}
         onChange={handleChange}
         tabIndex={-1}
       />
