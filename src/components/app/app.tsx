@@ -1,11 +1,13 @@
-import { useState, CSSProperties } from 'react';
 import { clsx } from 'clsx';
-import { Article } from '../article/Article';
+import { useState } from 'react';
+
+import { defaultArticleState } from '../../constants/articleProps';
 import { ArticleParamsForm } from '../article-params-form/ArticleParamsForm';
-import {
-  defaultArticleState,
-  ArticleStateType,
-} from '../../constants/articleProps';
+import { Article } from '../article/Article';
+
+import type { ArticleStateType } from '../../constants/articleProps';
+import type { CSSProperties } from 'react';
+
 import styles from './app.module.scss';
 
 export const App = (): React.JSX.Element => {
@@ -27,3 +29,4 @@ export const App = (): React.JSX.Element => {
     </main>
   );
 };
+
