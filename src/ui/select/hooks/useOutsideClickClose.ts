@@ -1,36 +1,38 @@
 import { useEffect } from 'react';
+import type { RefObject } from 'react';
 
 type UseOutsideClickClose = {
-	isOpen: boolean;
-	onChange: (newValue: boolean) => void;
-	onClose?: () => void;
-	rootRef: React.RefObject<HTMLDivElement>;
+  isOpen: boolean;
+  onChange: (newValue: boolean) => void;
+  onClose?: () => void;
+  rootRef: RefObject<HTMLDivElement | null>;
 };
 
 export const useOutsideClickClose = ({
-	isOpen,
-	rootRef,
-	onClose,
-	onChange,
-}: UseOutsideClickClose) => {
-	useEffect(() => {
-		const handleClick = (event: MouseEvent) => {
-			const { target } = event;
-			if (target instanceof Node && !rootRef.current?.contains(target)) {
-				isOpen && onClose?.();
-				onChange?.(false);
-			}
-		};
+  isOpen,
+  rootRef,
+  onClose,
+  onChange,
+}: UseOutsideClickClose): void => {
+  useEffect((): (() => void) | undefined => {
+    if (!isOpen) {
+      return;
+    }
 
-		if (!isOpen) {
-			return;
-		}
+    const handleClick = (event: MouseEvent): void => {
+      const { target } = event;
 
-		window.addEventListener('mousedown', handleClick);
+      if (target instanceof Node && !rootRef.current?.contains(target)) {
+        onClose?.();
+        onChange(false);
+      }
+    };
 
-		return () => {
-			window.removeEventListener('mousedown', handleClick);
-		};
-	}, [onClose, onChange, isOpen]);
+    window.addEventListener('mousedown', handleClick);
+
+    return (): void => {
+      window.removeEventListener('mousedown', handleClick);
+    };
+  }, [isOpen, onChange, onClose, rootRef]);
 };
 
